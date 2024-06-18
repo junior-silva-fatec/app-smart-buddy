@@ -80,6 +80,9 @@ class MainActivity : ComponentActivity() {
                 runOnUiThread {
                     val statusCode = response.code
                     Toast.makeText(this@MainActivity, "Código de status: $statusCode", Toast.LENGTH_SHORT).show()
+                    if(statusCode == 200) {
+                        setContentView(R.layout.activity_eventos)
+                    }
                 }
             }
         })
