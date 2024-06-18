@@ -10,16 +10,6 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import okhttp3.*
 import java.io.IOException
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.juniorandrerosa.smartbuddy.ui.theme.SmartBuddyTheme
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import org.json.JSONObject
 
@@ -81,9 +71,9 @@ class MainActivity : ComponentActivity() {
                 runOnUiThread {
                     val statusCode = response.code
                     Toast.makeText(this@MainActivity, "Código de status: $statusCode", Toast.LENGTH_SHORT).show()
-                    if(statusCode == 200) {
-                        //setContentView(R.layout.activity_eventos)
+                    if (statusCode == 200) {
                         val intent = Intent(this@MainActivity, EventosActivity::class.java)
+                        intent.putExtra("email", email)
                         startActivity(intent)
                     }
                 }

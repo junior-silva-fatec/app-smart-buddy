@@ -27,11 +27,11 @@ class EventosActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             SmartBuddyTheme {
-                val email = "234@234.com" // Replace this with the actual email used in the login
+                val email = intent.getStringExtra("email") ?: ""
                 var events by remember { mutableStateOf<List<Event>>(emptyList()) }
                 var isLoading by remember { mutableStateOf(true) }
 
-                LaunchedEffect(Unit) {
+                LaunchedEffect(email) {
                     events = fetchEvents(email)
                     isLoading = false
                 }
@@ -83,8 +83,6 @@ class EventosActivity : ComponentActivity() {
         }
     }
 }
-
-
 
 @Composable
 fun EventCard(event: Event) {
