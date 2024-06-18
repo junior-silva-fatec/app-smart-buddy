@@ -12,6 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SmartBuddy"
         tools:targetApi="31">
+        <activity android:name=".EventosActivity" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

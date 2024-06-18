@@ -1,6 +1,7 @@
 package com.juniorandrerosa.smartbuddy
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -81,7 +82,9 @@ class MainActivity : ComponentActivity() {
                     val statusCode = response.code
                     Toast.makeText(this@MainActivity, "Código de status: $statusCode", Toast.LENGTH_SHORT).show()
                     if(statusCode == 200) {
-                        setContentView(R.layout.activity_eventos)
+                        //setContentView(R.layout.activity_eventos)
+                        val intent = Intent(this@MainActivity, EventosActivity::class.java)
+                        startActivity(intent)
                     }
                 }
             }
