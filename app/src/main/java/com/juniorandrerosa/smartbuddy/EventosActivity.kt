@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.juniorandrerosa.smartbuddy.ui.theme.SmartBuddyTheme
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.*
 import org.json.JSONArray
@@ -39,7 +40,15 @@ class EventosActivity : ComponentActivity() {
                 if (isLoading) {
                     CircularProgressIndicator(modifier = Modifier.fillMaxSize())
                 } else {
-                    EventScreen(events)
+                    val coroutineScope = rememberCoroutineScope()
+                    EventScreen(events, onDelete = { eventId ->
+                        coroutineScope.launch {
+                            val success = deleteEvent(eventId)
+                            if (success) {
+                                events = events.filter { it.id != eventId }
+                            }
+                        }
+                    })
                 }
             }
         }
@@ -82,10 +91,29 @@ class EventosActivity : ComponentActivity() {
             }
         }
     }
+
+    private suspend fun deleteEvent(eventId: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            val request = Request.Builder()
+                .url("https://web-qx4yu7fnv0m1.up-us-nyc1-k8s-1.apps.run-on-seenode.com/events/$eventId")
+                .delete()
+                .build()
+
+            try {
+                val response = client.newCall(request).execute()
+                response.isSuccessful
+            } catch (e: IOException) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@EventosActivity, "Erro ao deletar evento: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+                false
+            }
+        }
+    }
 }
 
 @Composable
-fun EventCard(event: Event) {
+fun EventCard(event: Event, onDelete: (String) -> Unit) {
     Card(
         elevation = CardDefaults.cardElevation(4.dp),
         modifier = Modifier
@@ -95,17 +123,25 @@ fun EventCard(event: Event) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(text = event.title, style = MaterialTheme.typography.headlineSmall)
             Text(text = event.date, style = MaterialTheme.typography.bodyMedium)
+            Button(
+                onClick = { onDelete(event.id) },
+                modifier = Modifier.padding(top = 8.dp)
+            ) {
+                Text("Delete")
+            }
         }
     }
 }
 
 @Composable
-fun EventScreen(events: List<Event>) {
+fun EventScreen(events: List<Event>, onDelete: (String) -> Unit) {
     LazyColumn(modifier = Modifier
         .fillMaxSize()
         .padding(16.dp)) {
         items(events) { event ->
-            EventCard(event)
+            EventCard(event) { eventId ->
+                onDelete(eventId)
+            }
         }
     }
 }
@@ -125,7 +161,8 @@ fun DefaultPreview() {
                     time = "12:20",
                     owner = "owner@example.com"
                 )
-            )
+            ),
+            onDelete = {}
         )
     }
 }
