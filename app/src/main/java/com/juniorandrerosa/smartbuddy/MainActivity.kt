@@ -12,6 +12,7 @@ import okhttp3.*
 import java.io.IOException
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import org.json.JSONObject
+import org.mindrot.jbcrypt.BCrypt
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -111,11 +112,13 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun doCreateAccount(firstName: String, lastName: String, email: String, password: String) {
+        val hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt(10))
+
         val jsonBody = JSONObject().apply {
             put("firstName", firstName)
             put("lastName", lastName)
             put("email", email)
-            put("password", password)
+            put("password", hashedPassword)
         }
 
         val jsonString = jsonBody.toString()

@@ -47,6 +47,7 @@ android {
 }
 
 dependencies {
+    implementation ("org.mindrot:jbcrypt:0.4")
     implementation ("com.squareup.okhttp3:okhttp:4.9.3")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
